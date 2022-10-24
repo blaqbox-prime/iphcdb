@@ -48,8 +48,8 @@ export default function Home({members}) {
 
                 {
                   members.map(member => (
-                    <Tooltip label={`View ${member.firstNames}'s full profile`}>
-                      <Tr key={member._id} 
+                    <Tooltip label={`View ${member.firstNames}'s full profile`} key={member._id} >
+                      <Tr 
                       cursor="pointer"
                       _hover={
                         {backgroundColor: "blue.100",}
