@@ -44,17 +44,17 @@ const memberSchema = new Schema({
         default: 'Unemployed',
         enum: ['Employed','Self-Employed','Unemployed']
     },
-    activelySeekingWork: {
+    isSeekingWork: {
         type: Boolean,
         required: true,
         default: false,
     },
-    married: {
+    isMarried: {
         type: Boolean,
         required: true,
         default: false
     },
-    spouse: mongoose.Types.ObjectId,
+    spouse: [mongoose.Types.ObjectId],
     children:[mongoose.Types.ObjectId],
     occupation: {
         type: Map,
@@ -67,6 +67,6 @@ const memberSchema = new Schema({
     } 
 }, {timestamps: true});
 
-const MemberModel = models.MemberModel || model('Member',memberSchema);
+const MemberModel = models.Member || model('Member',memberSchema);
 
-export default MemberModel;
+module.exports = {MemberModel};

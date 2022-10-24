@@ -1,7 +1,22 @@
+import { Box, Heading } from '@chakra-ui/react'
 import Head from 'next/head'
-import Signup from '../components/Signup'
 
-export default function Home() {
+
+import {
+  Table,
+  Thead,
+  Tbody,
+  Tfoot,
+  Tr,
+  Th,
+  Td,
+  TableCaption,
+  TableContainer,
+  Tooltip
+} from '@chakra-ui/react'
+
+export default function Home({members}) {
+
   return (
     <div>
       <Head>
@@ -10,8 +25,63 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-        <Signup/>
-     
+      <Heading>
+        Database Dashboard 
+      </Heading>
+      <Box as="main">
+        {/* Table of members */}
+
+        <TableContainer my="3">
+          <Table variant="striped">
+              <Thead>
+                <Tr>
+                  <Th>Name(s)</Th>
+                  <Th>Surname</Th>
+                  <Th>Email</Th>
+                  <Th>Contact</Th>
+                  <Th>Employment Status</Th>
+                  <Th>Actively Seeking Work</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {/* Render Each Record */}
+
+                {
+                  members.map(member => (
+                    <Tooltip label={`View ${member.firstNames}'s full profile`}>
+                      <Tr key={member._id} 
+                      cursor="pointer"
+                      _hover={
+                        {backgroundColor: "blue.100",}
+                      }
+                    >
+                        <Td>{member.firstNames}</Td>
+                        <Td>{member.lastName}</Td>
+                        <Td>{member.email}</Td>
+                        <Td>{member.contact}</Td>
+                        <Td>{member.employmentStatus}</Td>
+                        <Td>{member.isSeekingWork ? "Yes" : "No" }</Td>
+                        <Td></Td>
+                    </Tr>
+                    </Tooltip>
+                  ))
+                }
+              </Tbody>
+          </Table>
+        </TableContainer>
+
+      </Box>     
     </div>
   )
+}
+
+export async function getStaticProps(){
+  let res = await fetch('http://localhost:3000/api/members');
+
+  let members = await res.json();
+  console.log(members);
+
+  return {
+    props: members
+  }
 }

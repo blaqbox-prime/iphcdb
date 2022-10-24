@@ -1,19 +1,26 @@
-import { Box, Flex, Text } from '@chakra-ui/react'
+import { AddIcon } from '@chakra-ui/icons'
+import { Box, Button, Flex, Text } from '@chakra-ui/react'
+import Link from 'next/link'
 import React from 'react'
+
 
 function Navbar() {
   return (
    
         <Flex alignItems={'center'}
         height="50px" boxShadow="sm" px="5"
-        justifyContent="space-between">
+        justifyContent="space-between" mb={5}>
             {/* Left -- Branding */}
             <Flex alignItems={'center'}>
-                <Text>IPHC DB</Text>
+                <Link href={'/'}>
+                    <Text cursor="pointer">IPHC DB</Text>
+                </Link>
             </Flex>
             {/* Right -- NavButtons */}
             <Flex alignItems={'center'}>
-                <Text>Sign in</Text>
+                <Link href={'/signup'}>
+                <Button size={"sm"} rightIcon={<AddIcon />}>Sign Up </Button>
+                </Link>
             </Flex>
         </Flex>
 

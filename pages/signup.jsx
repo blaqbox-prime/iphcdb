@@ -1,6 +1,8 @@
 import { Box, Button, Flex, Grid, Heading, Input, Stack, Text } from '@chakra-ui/react'
 import React, { useState, useRef } from 'react'
 import { useForm } from 'react-hook-form'
+import { useToast } from '@chakra-ui/react'
+import { useRouter } from 'next/router'
 
 import {
     FormControl,
@@ -18,11 +20,66 @@ function Signup() {
     const [empStatus,setEmpStatus] = useState();
     // For Loading animation
     const [isLoading, setLoading] = useState(false);
+    // track matching password error
+    const [isMatchingPass,setIsMatchingPass] = useState();
+    const toast = useToast();
+
+    const router = useRouter();
 
 
     // log form result on submit
-    const onSubmit = (data) => console.log(data);
-    const onInvalid = () => console.log(errors);
+    const onSubmit = (data) => {
+
+        console.log(data)
+
+        if(!hasMatchingPasswords(data.password,data.confirmPass)){
+            return;
+        }
+
+        let addressData = {
+            street: data.street,
+            suburb: data.suburb,
+            city: data.city,
+            province: data.province,
+            postal_code: data.postal
+        };
+
+        let occupationData = {
+            company: data.company,
+            jobTitle: data.jobTitle,
+        };
+
+        let formattedData = {
+            firstNames: data.firstNames,
+            lastName: data.lastName,
+            email: data.email,
+            password: data.password,
+            contact: data.contact,
+            dateOfBirth: data.dob,
+            address: addressData,
+            employmentStatus: data.empStatus,
+            isSeekingWork: data.isSeekingWork == 'Yes' ? true : false,
+            isMarried: data.isMarried == 'Yes' ? true : false,
+            occupation: occupationData,
+        }
+        console.log(formattedData);
+
+        // submit to backend
+        setLoading(true);
+        fetch('/api/addmember',{
+            method: 'POST',
+            body: JSON.stringify(formattedData),
+        }).then(result => result.json()).then(res => {
+            router.push('/');
+        })
+        .catch(error => console.log(error));
+        setLoading(false);
+    };
+
+    const hasMatchingPasswords = (pass1, pass2) => {
+        return pass1 === pass2;
+    }
+
 
   return (
     <Flex height={["100vh","100vh","80vh"]} boxShadow={["unset","unset","md"]} mt={5} 
@@ -44,7 +101,7 @@ function Signup() {
                 {/* ----------------------- */}
                 <FormControl mb="3">
                     <FormLabel>Last Name</FormLabel>
-                    <Input type="text" {...register("lastNames")}/>
+                    <Input type="text" {...register("lastName")}/>
                 </FormControl>
                 {/* ----------------------- */}
                 <FormControl mb="3">
@@ -153,9 +210,13 @@ function Signup() {
                 <FormControl mb="3">
                     <FormLabel>Confirm Password</FormLabel>
                     <Input type="password" {...register("confirmPass")}/>
+                    {!isMatchingPass && <FormErrorMessage>Passwords do not match</FormErrorMessage>}
                 </FormControl>
             </Box>
-            <Button type="submit" colorScheme='blue' px={8} >Submit</Button>
+            <Button type="submit" colorScheme='blue' px={8} 
+            isLoading={isLoading}
+            loadingText="Submitting"
+            >Submit</Button>
         </Box>
     </Flex>
   )
