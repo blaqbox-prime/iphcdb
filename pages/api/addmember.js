@@ -31,6 +31,7 @@ export default async function handler(req,res){
 
     }catch(error){
         console.log(error)
-        res.json({error})
+        return res.json({error})
+
     }
 }

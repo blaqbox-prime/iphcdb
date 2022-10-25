@@ -1,5 +1,7 @@
 import { Box, Heading } from '@chakra-ui/react'
 import Head from 'next/head'
+import connecMongo from '../db/db';
+import {MemberModel} from '../db/models/MemberModel';
 
 
 import {
@@ -16,7 +18,7 @@ import {
 } from '@chakra-ui/react'
 
 export default function Home({members}) {
-
+  console.log(members)
   return (
     <div>
       <Head>
@@ -76,12 +78,28 @@ export default function Home({members}) {
 }
 
 export async function getStaticProps(){
-  let res = await fetch('http://localhost:3000/api/members');
+  try{
+    await connecMongo();
 
-  let members = await res.json();
-  console.log(members);
+  
+        //create document
+        const members = await MemberModel.find();
+        
+        const jsonData = JSON.stringify(members);
 
-  return {
-    props: members
-  }
+
+        return {
+          props: {members: JSON.parse(jsonData)}
+        }
+  
+
+
+}catch(error){
+    console.log(error)
+    return {
+      props: {
+        members: []
+      }
+    }
+}
 }

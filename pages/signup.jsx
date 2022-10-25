@@ -62,7 +62,6 @@ function Signup() {
             isMarried: data.isMarried == 'Yes' ? true : false,
             occupation: occupationData,
         }
-        console.log(formattedData);
 
         // submit to backend
         setLoading(true);
