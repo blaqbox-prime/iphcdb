@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 
 export default async function handler(req,res){
 
-    try{
+    
         await connecMongo();
 
         // Create Hashed Password
@@ -21,17 +21,14 @@ export default async function handler(req,res){
             //create document
             const member = await MemberModel.create(memberData);
             console.log("member created")
-            return res.json({member});
+            res.setHeader('Content-Type', 'application/json');
+            return res.status(200).json({member});
             
         }).catch(error => {
             console.log(error);
-            return res.status(500).json({ error: error.message });
+            return res.status(500).json({ error });
         })
 
 
-    }catch(error){
-        console.log(error)
-        return res.json({error})
-
-    }
+   
 }

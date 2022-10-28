@@ -13,6 +13,7 @@
     "@chakra-ui/react": "^2.3.6",
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
+    "@hookform/error-message": "^2.0.0",
     "@reduxjs/toolkit": "^1.8.6",
     "bcrypt": "^5.1.0",
     "dotenv": "^16.0.3",
