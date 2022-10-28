@@ -78,7 +78,7 @@ export default function Home({members}) {
   )
 }
 
-export async function getStaticProps(){
+export async function getServerSideProps(){
   try{
     await connecMongo();
 
