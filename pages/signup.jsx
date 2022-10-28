@@ -65,8 +65,10 @@ function Signup() {
         }
 
         // submit to backend
+
+        let host = process.env.NODE_ENV == 'production' ? 'https://iphcdb.vercel.app' :'http://localhost:3000'
        
-        let res = await fetch('/api/addmember',{
+        let res = await fetch(`${host}/api/addmember`,{
             method: 'POST',
             body: JSON.stringify(formattedData),
         });
