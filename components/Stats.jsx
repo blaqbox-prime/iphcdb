@@ -11,12 +11,16 @@ import {
 
 function Stats({members}) {
 
+  const getUnemployed = () => members ? members.filter(member => member.employmentStatus === 'Unemployed').length : 0;
+  const getTotalRegisteredMembers = () => members ? members.length : 0;
+  const getNumSeekingWork = () => members ? members.filter(member => member.isSeekingWork === true).length : 0;
+
   return (
     <Flex my="5" gap={'3'}>
         <Box rounded="md" boxShadow={'md'} p="3" width={'350px'}> 
             <Stat cursor="pointer" >
                 <StatLabel fontWeight={'bold'}>Members</StatLabel>
-                <StatNumber>15</StatNumber>
+                <StatNumber>{getTotalRegisteredMembers()}</StatNumber>
                 <StatHelpText color={'blackAlpha.600'}>Number of members registered</StatHelpText>
             </Stat>
             </Box>
@@ -26,7 +30,7 @@ function Stats({members}) {
 
             <Stat cursor="pointer">
                 <StatLabel fontWeight={'bold'}>Unemployed</StatLabel>
-                <StatNumber>3</StatNumber>
+                <StatNumber>{getUnemployed()}</StatNumber>
                 <StatHelpText color={'blackAlpha.600'}>Number of members unemployed</StatHelpText>
             </Stat>
             </Box>
@@ -35,7 +39,7 @@ function Stats({members}) {
             <Box rounded="md" boxShadow={'md'} p="3" width={'350px'}> 
             <Stat cursor="pointer">
                 <StatLabel fontWeight={'bold'}>Actively Seeking Work</StatLabel>
-                <StatNumber>7</StatNumber>
+                <StatNumber>{getNumSeekingWork()}</StatNumber>
                 <StatHelpText color={'blackAlpha.600'}>Currently looking for a job</StatHelpText>
             </Stat>
         </Box>
