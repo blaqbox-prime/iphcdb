@@ -21,6 +21,12 @@ const memberSchema = new Schema({
         type: String,
         required: true,
     },
+    gender: {
+        type: String,
+        required: true,
+        default: 'Male',
+        enum: ['Male','Female']
+    },
     email:{
         type: String,
         required: true,
