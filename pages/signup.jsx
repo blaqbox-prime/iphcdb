@@ -163,6 +163,16 @@ function Signup() {
                     <Input type="text" {...register("contact",{required: 'Field is required'})}/>
                     <Text color="red"><ErrorMessage errors={errors} name={'contact'}/></Text>
                 </FormControl>
+                {/* ----------------------- */}
+                <FormControl mb="3" isInvalid={'gender' in errors}>
+                    <FormLabel>Gender <Text as="span" color="red">*</Text></FormLabel>
+                    <RadioGroup defaultValue='Male'>
+                        <Stack direction='row' gap={5}>
+                            <Radio value='Male' {...register("gender")}>Male</Radio>
+                            <Radio value='Female' {...register("gender")}>Female</Radio>
+                        </Stack>
+                    </RadioGroup>
+                </FormControl>
                  {/* ----------------------- */}
                  <FormControl mb="3" isInvalid={'isMarried' in errors}>
                     <FormLabel>Are You Married? <Text as="span" color="red">*</Text></FormLabel>
@@ -198,7 +208,6 @@ function Signup() {
                     <FormLabel>City <Text as="span" color="red">*</Text></FormLabel>
                     <Input type="text" {...register("city", {required: 'Field is required'})}/>
                     <Text color="red"><ErrorMessage errors={errors} name={'city'}/></Text>
-
                 </FormControl>
                 
                 {/* ----------------------- */}
