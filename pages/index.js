@@ -17,6 +17,8 @@ import {
   TableContainer,
   Tooltip
 } from '@chakra-ui/react'
+import MembersTable from '../components/MembersTable';
+import Stats from '../components/Stats';
 
 export default function Home({members}) {
   console.log(members)
@@ -32,46 +34,10 @@ export default function Home({members}) {
         Database Dashboard 
       </Heading>
       <Box as="main">
+        {/* Quick stats */}
+        <Stats/>
         {/* Table of members */}
-
-        <TableContainer my="3">
-          <Table variant="striped">
-              <Thead>
-                <Tr>
-                  <Th>Name(s)</Th>
-                  <Th>Surname</Th>
-                  <Th>Email</Th>
-                  <Th>Contact</Th>
-                  <Th>Employment Status</Th>
-                  <Th>Actively Seeking Work</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {/* Render Each Record */}
-
-                {
-                  members.map(member => (
-                    <Tooltip label={`View ${member.firstNames}'s full profile`} key={member._id} >
-                      <Tr 
-                      cursor="pointer"
-                      _hover={
-                        {backgroundColor: "blue.100",}
-                      }
-                    >
-                        <Td>{member.firstNames}</Td>
-                        <Td>{member.lastName}</Td>
-                        <Td>{member.email}</Td>
-                        <Td>{member.contact}</Td>
-                        <Td>{member.employmentStatus}</Td>
-                        <Td>{member.isSeekingWork ? "Yes" : "No" }</Td>
-                        <Td></Td>
-                    </Tr>
-                    </Tooltip>
-                  ))
-                }
-              </Tbody>
-          </Table>
-        </TableContainer>
+        <MembersTable members={members} />
 
       </Box>     
     </div>
