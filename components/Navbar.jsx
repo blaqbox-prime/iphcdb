@@ -1,10 +1,33 @@
 import { AddIcon } from '@chakra-ui/icons'
-import { Box, Button, Flex, Text } from '@chakra-ui/react'
+import { Box, Button, Flex, Text, Icon } from '@chakra-ui/react'
 import Link from 'next/link'
 import React from 'react'
+import {FaUserCircle} from 'react-icons/fa';
+import {BiExit} from 'react-icons/bi'
+import {useSelector} from 'react-redux'
+import { useDispatch } from 'react-redux';
+import {
+    Menu,
+    MenuButton,
+    MenuList,
+    MenuItem,
+    MenuItemOption,
+    MenuGroup,
+    MenuOptionGroup,
+    MenuDivider,
+  } from '@chakra-ui/react'
+import { signout } from '../src/redux/reducers/authUser/authUserSlice';
 
 
 function Navbar() {
+
+    const authUser = useSelector((state) => state.authUser);
+    const dispatch = useDispatch();
+
+    const signoutUser = () => {
+        dispatch(signout);
+    }
+
   return (
    
         <Flex alignItems={'center'}
@@ -18,9 +41,22 @@ function Navbar() {
             </Flex>
             {/* Right -- NavButtons */}
             <Flex alignItems={'center'}>
-                <Link href={'/signup'}>
-                <Button size={"sm"} rightIcon={<AddIcon />}>Sign Up </Button>
-                </Link>
+                <Menu isLazy>
+                    <MenuButton>
+                        <Flex alignItems={'center'}>
+                        <Icon boxSize={6} as={FaUserCircle}/>
+                {authUser && <Text ml="3">{authUser.firstNames}</Text>}
+                        </Flex>
+                    </MenuButton>
+                    {
+                        authUser && (
+                            <MenuList>
+                                <MenuItem icon={<Icon as={FaUserCircle}/>}>Profile</MenuItem>
+                                <MenuItem icon={<Icon as={BiExit}/>} onClick={signoutUser}>Sign Out</MenuItem>
+                            </MenuList>
+                        )
+                    }
+                </Menu>
             </Flex>
         </Flex>
 

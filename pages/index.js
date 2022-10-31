@@ -2,25 +2,23 @@ import { Box, Heading } from '@chakra-ui/react'
 import Head from 'next/head'
 import connecMongo from '../db/db';
 import {MemberModel} from '../db/models/MemberModel';
-import {Url} from 'url';
-
-
-import {
-  Table,
-  Thead,
-  Tbody,
-  Tfoot,
-  Tr,
-  Th,
-  Td,
-  TableCaption,
-  TableContainer,
-  Tooltip
-} from '@chakra-ui/react'
+import { useRouter } from 'next/router'
 import MembersTable from '../components/MembersTable';
 import Stats from '../components/Stats';
+import {useSelector} from 'react-redux'
+import { useEffect } from 'react';
 
 export default function Home({members}) {
+
+  const authUser = useSelector((state) => state.authUser);
+  const router = useRouter();
+
+  useEffect(() => {
+    if(!authUser){
+      router.push('/signin')
+    }
+  },[authUser]);
+
   console.log(members)
   return (
     <div>

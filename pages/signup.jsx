@@ -4,6 +4,8 @@ import { useForm } from 'react-hook-form'
 import { useToast } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import { ErrorMessage } from '@hookform/error-message';
+import { useDispatch } from 'react-redux';
+
 
 import {
     FormControl,
@@ -12,10 +14,12 @@ import {
     FormHelperText,
     Select,
     Radio, RadioGroup 
-  } from '@chakra-ui/react'
+} from '@chakra-ui/react'
+import { signin } from '../src/redux/reducers/authUser/authUserSlice'
 
 function Signup() {
-
+    
+    const dispatch = useDispatch();
     const {register, handleSubmit, formState: {errors, isSubmitting, isValid}} = useForm();
     // const [data,setData] = useState();
     const [empStatus,setEmpStatus] = useState();
@@ -34,7 +38,16 @@ function Signup() {
         console.log(data)
 
         if(!hasMatchingPasswords(data.password,data.confirmPass)){
-            return;
+            return toast(
+                    {
+                        title: 'Passwords don\'t match',
+                        description: 'Check passwords and try again',
+                        status: 'error',
+                        duration: 3000,
+                        isClosable: true,
+                      }
+                );
+
         }
 
         let addressData = {
@@ -73,8 +86,6 @@ function Signup() {
             body: JSON.stringify(formattedData),
         });
 
-        console.log(res);
-
         if(res.status === 200){
             toast({
                 title: 'Account created.',
@@ -83,6 +94,7 @@ function Signup() {
                 duration: 5000,
                 isClosable: true,
               });
+              dispatch(signin(await res.json().member));
             setTimeout(() => {
                 router.push('/');
             },2000)
