@@ -9,14 +9,18 @@ import {
     Td,
     TableCaption,
     TableContainer,
-    Tooltip
+    Tooltip,
+    Box,
+    Button
   } from '@chakra-ui/react'
 
 function MembersTable({members}) {
     console.log(members)
 
   return (
-    <TableContainer my="3">
+    <Box>
+      <Button w="100%" colorScheme={'blue'}>Add New Member</Button>
+      <TableContainer my="3">
           <Table variant="striped">
               <Thead>
                 <Tr>
@@ -54,6 +58,7 @@ function MembersTable({members}) {
               </Tbody>
           </Table>
         </TableContainer>
+    </Box>
   )
 }
 
