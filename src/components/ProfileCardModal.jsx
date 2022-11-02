@@ -16,7 +16,8 @@ import {
   Icon,
   HStack,
   Divider, 
-  Link
+  Link,
+  ListItem
 } from '@chakra-ui/react'
 
 import {MdAlternateEmail, MdOutlinePhone} from 'react-icons/md'
@@ -64,7 +65,7 @@ function ProfileCardModal({isOpen, onOpen, onClose, member}) {
         {
           !member.isMarried ? <Text>None</Text>
           : <List>
-            {member.spouses.map(spouse => <ListItem>{`${spouse.firstNames} ${spouse.lastName}`}</ListItem>)}
+            {member.spouses.map(spouse => <ListItem key={spouse._id}>{`${spouse.firstNames} ${spouse.lastName}`}</ListItem>)}
           </List>
         }
         </Box> 
@@ -75,7 +76,7 @@ function ProfileCardModal({isOpen, onOpen, onClose, member}) {
         {
           member.children.length == 0 ? <Text>None</Text>
           : <List>
-            {member.children.map(child => <ListItem>{`${child.firstNames} ${child.lastName}`}</ListItem>)}
+            {member.children.map(child => <ListItem key={child._id}>{`${child.firstNames} ${child.lastName}`}</ListItem>)}
           </List>
         }
         </Box> 
