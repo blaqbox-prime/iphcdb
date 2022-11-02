@@ -10,8 +10,6 @@ import { useDispatch } from 'react-redux';
 import {
     FormControl,
     FormLabel,
-    FormErrorMessage,
-    FormHelperText,
     Select,
     Radio, RadioGroup 
 } from '@chakra-ui/react'
@@ -24,9 +22,6 @@ function Signup() {
     // const [data,setData] = useState();
     const [empStatus,setEmpStatus] = useState();
     // For Loading animation
-    const [isLoading, setLoading] = useState(false);
-    // track matching password error
-    const [isMatchingPass,setIsMatchingPass] = useState();
     const toast = useToast();
 
     const router = useRouter();
