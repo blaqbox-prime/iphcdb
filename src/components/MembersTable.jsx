@@ -32,7 +32,7 @@ function MembersTable({members}) {
 
   return (
     <Box>
-      <Button w="100%" colorScheme={'blue'} onClick={()=>{}}>Add New Member</Button>
+      <Button w="100%" colorScheme={'blue'} onClick={()=>{router.push('/signup')}}>Add New Member</Button>
       <TableContainer my="3">
           <Table variant="striped">
               <Thead>

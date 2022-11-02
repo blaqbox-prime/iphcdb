@@ -109,7 +109,17 @@ function ProfileCardModal({isOpen, onOpen, onClose, member}) {
         {/* Employment Status */}
         <Heading fontSize={'2xl'} mb={2}>Employment</Heading>
 
-          
+        <Text mb={4}>Employment status: <br/> {member.employmentStatus}</Text>
+        {
+          member.employmentStatus !== 'Unemployed' && (<Box>
+             <Text mb={4}>Company: <br/> {member.occupation.company}</Text>
+             <Text mb={4}>Position: <br/> {member.occupation.jobTitle}</Text>
+          </Box>)
+        }
+
+      <Text mb={4}>Actively seeking work: <br/>
+       <Text as={'span'} color={member.isSeekingWork ? 'green.600' : 'red.600'}>{member.isSeekingWork ? 'Yes' : 'No'}</Text>
+      </Text>
 
         </ModalBody>
 

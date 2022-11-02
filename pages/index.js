@@ -13,7 +13,6 @@ export default function Home({members}) {
   const authUser = useSelector((state) => state.authUser);
   const router = useRouter();
 
-
   useEffect(() => {
     if(!authUser){
       router.push('/signin')
@@ -48,11 +47,10 @@ export async function getServerSideProps(){
     await connecMongo();
 
   
-        //create document
+        //fetch user
         const members = await MemberModel.find();
         
         const jsonData = JSON.stringify(members);
-
 
         return {
           props: {members: JSON.parse(jsonData)}
