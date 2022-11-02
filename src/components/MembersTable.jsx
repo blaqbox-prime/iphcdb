@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
     Table,
     Thead,
@@ -11,15 +11,28 @@ import {
     TableContainer,
     Tooltip,
     Box,
-    Button
+    Button,useDisclosure
   } from '@chakra-ui/react'
 
+  import { useRouter } from 'next/router'
+import ProfileCardModal from './ProfileCardModal';
+
 function MembersTable({members}) {
-    console.log(members)
+
+  const router = useRouter();
+  const {isOpen, onOpen, onClose} = useDisclosure();
+  const [selectedMember, setSelectedMember] = useState(null);
+    
+  console.log(members)
+
+  const showProfile = (member) => {
+    setSelectedMember(member);
+    !isOpen && onOpen();
+  }
 
   return (
     <Box>
-      <Button w="100%" colorScheme={'blue'}>Add New Member</Button>
+      <Button w="100%" colorScheme={'blue'} onClick={()=>{}}>Add New Member</Button>
       <TableContainer my="3">
           <Table variant="striped">
               <Thead>
@@ -43,6 +56,7 @@ function MembersTable({members}) {
                       _hover={
                         {backgroundColor: "blue.100",}
                       }
+                      onClick={()=>{showProfile(member)}}
                     >
                         <Td>{member.firstNames}</Td>
                         <Td>{member.lastName}</Td>
@@ -58,6 +72,9 @@ function MembersTable({members}) {
               </Tbody>
           </Table>
         </TableContainer>
+        {
+          selectedMember && <ProfileCardModal isOpen={isOpen} member={selectedMember} onClose={onClose}/>
+        }
     </Box>
   )
 }
