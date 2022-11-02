@@ -1,6 +1,6 @@
 // pages/_app.js
 import { ChakraProvider, Container } from '@chakra-ui/react'
-import Navbar from '../components/Navbar'
+import Navbar from '../src/components/Navbar'
 import { Provider } from 'react-redux';
 import store from '../src/redux/store';
 

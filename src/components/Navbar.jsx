@@ -16,7 +16,7 @@ import {
     MenuOptionGroup,
     MenuDivider,
   } from '@chakra-ui/react'
-import { signout } from '../src/redux/reducers/authUser/authUserSlice';
+import { signout } from '../redux/reducers/authUser/authUserSlice';
 
 
 function Navbar() {

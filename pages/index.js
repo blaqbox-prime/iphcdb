@@ -3,8 +3,8 @@ import Head from 'next/head'
 import connecMongo from '../db/db';
 import {MemberModel} from '../db/models/MemberModel';
 import { useRouter } from 'next/router'
-import MembersTable from '../components/MembersTable';
-import Stats from '../components/Stats';
+import MembersTable from '../src/components/MembersTable';
+import Stats from '../src/components/Stats';
 import {useSelector} from 'react-redux'
 import { useEffect } from 'react';
 
@@ -47,11 +47,10 @@ export async function getServerSideProps(){
     await connecMongo();
 
   
-        //create document
+        //fetch user
         const members = await MemberModel.find();
         
         const jsonData = JSON.stringify(members);
-
 
         return {
           props: {members: JSON.parse(jsonData)}

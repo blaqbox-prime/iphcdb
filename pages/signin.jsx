@@ -47,6 +47,9 @@ function Signin() {
 
     dispatch(signin(resData.member));
 
+    // Save to local storage
+    localStorage.setItem('IPHCDB_AUTH',JSON.stringify(resData.member._id));
+
     router.push('/');
 
   }
