@@ -50,7 +50,7 @@ function Signin() {
     // Save to local storage
     localStorage.setItem('IPHCDB_AUTH',JSON.stringify(resData.member._id));
 
-    router.push('/');
+    router.push('/dashboard');
 
   }
 

@@ -123,7 +123,7 @@ function ProfileCardModal({isOpen, onOpen, onClose, member}) {
       </Text>
 
         </ModalBody>
-
+          
       <ModalFooter>
         <Button colorScheme={'blue'} onClick={onClose}>Close</Button>
       </ModalFooter>
