@@ -17,15 +17,18 @@ import {
     MenuDivider,
   } from '@chakra-ui/react'
 import { signout } from '../redux/reducers/authUser/authUserSlice';
+import { useRouter } from 'next/router';
 
 
 function Navbar() {
 
     const authUser = useSelector((state) => state.authUser);
     const dispatch = useDispatch();
+    const router = useRouter();
 
     const signoutUser = () => {
         dispatch(signout);
+        router.reload();
     }
 
   return (
