@@ -19,7 +19,7 @@ import ProfileCardModal from './ProfileCardModal';
 import { AddIcon } from '@chakra-ui/icons';
 import { useSelector } from 'react-redux';
 
-import { MdEdit, MdDelete } from 'react-icons/md';
+import { MdEdit, MdDelete, MdRemoveRedEye } from 'react-icons/md';
 import DeleteMemberModal from './DeleteMemberModal';
 
 
@@ -34,8 +34,6 @@ function MembersTable({members}) {
   const [selectedForDeleteMember, setSelectedForDeleteMember] = useState(null);
   const authUser = useSelector((state) => state.authUser);
     
-  console.log(members)
-
   const showProfile = (member) => {
     setSelectedMember(member);
     !isOpen && onOpen();
@@ -68,13 +66,13 @@ function MembersTable({members}) {
 
                 {
                   members.map(member => (
-                    <Tooltip label={`View ${member.firstNames}'s full profile`} key={member._id} >
+                    <Tooltip label={ !authUser.isAdmin && `View ${member.firstNames}'s full profile`} key={member._id} >
                       <Tr 
                       cursor="pointer"
                       _hover={
                         {backgroundColor: "blue.100",}
                       }
-                      onClick={()=>{showProfile(member)}}
+                      onClick={()=>{!authUser.isAdmin && showProfile(member)}}
                     >
                         <Td>{member.firstNames}</Td>
                         <Td>{member.lastName}</Td>
@@ -83,8 +81,9 @@ function MembersTable({members}) {
                         <Td>{member.employmentStatus}</Td>
                         <Td>{member.isSeekingWork ? "Yes" : "No" }</Td>
                         { authUser?.isAdmin && (<Td>
-                          <IconButton aria-label="Edit members profile" bg="transparent" icon={<Icon as={MdEdit}/>}/>
-                          <IconButton aria-label="Delete members profile" bg="transparent" icon={<Icon as={MdDelete} color="red" onClick={()=>{showDeleteMemberModal()}}/>} />
+                          <Tooltip label="View"><IconButton aria-label="View profile" bg="transparent" icon={<Icon as={MdRemoveRedEye}/>}  onClick={()=>{showProfile(member)}}/></Tooltip>
+                          <Tooltip label="Edit"><IconButton aria-label="Edit members profile" bg="transparent" icon={<Icon as={MdEdit}/>}/></Tooltip>
+                          <Tooltip label="Delete"><IconButton aria-label="Delete members profile" bg="transparent" icon={<Icon as={MdDelete} color="red"/>}  onClick={()=>{showDeleteMemberModal(member)}} /></Tooltip>
                         </Td>)}
                     </Tr>
                     </Tooltip>
@@ -97,7 +96,7 @@ function MembersTable({members}) {
           selectedMember && <ProfileCardModal isOpen={isOpen} member={selectedMember} onClose={onClose}/>
         }
         {
-          selectedForDeleteMember && <DeleteMemberModal isOpen={confirmDeleteModal.isOpen} member={selectedMember} onClose={confirmDeleteModal.onClose}/>
+          selectedForDeleteMember && <DeleteMemberModal isOpen={confirmDeleteModal.isOpen} member={selectedForDeleteMember} onClose={confirmDeleteModal.onClose}/>
         }
     </Box>
   )

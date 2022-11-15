@@ -47,7 +47,7 @@ function ProfileCardModal({isOpen, onOpen, onClose, member}) {
 
         <Heading fontSize={'2xl'}>Personal Information</Heading>
        
-        <Flex gap={'300px'}>
+        <Flex gap={['100px','200px','300px']}>
         <Box>
         <Text mb={4}>First Names: <br/> {member.firstNames}</Text>
         <Text mb={4}>Surname: <br/> {member.lastName}</Text>
