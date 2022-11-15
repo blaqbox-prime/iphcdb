@@ -65,5 +65,5 @@ export async function getServerSideProps(){
         members: []
       }
     }
-}
+  }
 }
