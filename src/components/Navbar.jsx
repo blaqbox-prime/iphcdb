@@ -54,7 +54,7 @@ function Navbar() {
                     {
                         authUser && (
                             <MenuList>
-                                <MenuItem icon={<Icon as={FaUserCircle}/>}>Profile</MenuItem>
+                                <Link href={`/members/${authUser._id}`}><MenuItem icon={<Icon as={FaUserCircle}/>}>Profile</MenuItem></Link>
                                 <MenuItem icon={<Icon as={BiExit}/>} onClick={signoutUser}>Sign Out</MenuItem>
                             </MenuList>
                         )
