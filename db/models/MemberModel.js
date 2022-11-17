@@ -70,6 +70,11 @@ const memberSchema = new Schema({
         type: String,
         min: 6,
         required: true,
+    },
+    isAdmin: {
+        type: Boolean,
+        required: true,
+        default: false,
     } 
 }, {timestamps: true});
 
