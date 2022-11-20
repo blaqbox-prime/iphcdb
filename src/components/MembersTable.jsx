@@ -21,6 +21,7 @@ import { useSelector } from 'react-redux';
 
 import { MdEdit, MdDelete, MdRemoveRedEye } from 'react-icons/md';
 import DeleteMemberModal from './DeleteMemberModal';
+import Link from 'next/link';
 
 
 function MembersTable({members}) {
@@ -82,7 +83,7 @@ function MembersTable({members}) {
                         <Td>{member.isSeekingWork ? "Yes" : "No" }</Td>
                         { authUser?.isAdmin && (<Td>
                           <Tooltip label="View"><IconButton aria-label="View profile" bg="transparent" icon={<Icon as={MdRemoveRedEye}/>}  onClick={()=>{showProfile(member)}}/></Tooltip>
-                          <Tooltip label="Edit"><IconButton aria-label="Edit members profile" bg="transparent" icon={<Icon as={MdEdit}/>}/></Tooltip>
+                          <Tooltip label="Edit"><Link href={`/members/${member._id}`}><IconButton aria-label="Edit members profile" bg="transparent" icon={<Icon as={MdEdit}/>}/></Link></Tooltip>
                           <Tooltip label="Delete"><IconButton aria-label="Delete members profile" bg="transparent" icon={<Icon as={MdDelete} color="red"/>}  onClick={()=>{showDeleteMemberModal(member)}} /></Tooltip>
                         </Td>)}
                     </Tr>

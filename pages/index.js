@@ -41,7 +41,7 @@ export default function Dashboard({ members }) {
   );
 }
 
-export async function getServerSideProps() {
+export async function getStaticProps(context) {
   try {
     await connectMongo();
 
