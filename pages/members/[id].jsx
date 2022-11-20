@@ -1,4 +1,4 @@
-import {Box, Button, Divider, Flex, Grid, Heading, Icon, Input, Stack, Text} from '@chakra-ui/react';
+import {Box, Button, Divider, Flex, Grid, Heading, Icon, Input, Stack, Text, useRadio, useRadioGroup} from '@chakra-ui/react';
 import React, { useState, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { useToast } from '@chakra-ui/react'
@@ -26,7 +26,7 @@ function Profile({member}) {
          spouse} = member;
 
   const dispatch = useDispatch();
-    const {register, handleSubmit, formState: {errors, isSubmitting, isValid}} = useForm();
+    const {register, handleSubmit, formState: {errors, isSubmitting, isValid}} = useForm({defaultValues:{isMarried: isMarried, gender: gender}});
     // const [data,setData] = useState();
     const [empStatus,setEmpStatus] = useState();
     // For Loading animation
@@ -38,19 +38,6 @@ function Profile({member}) {
     const onSubmit = async (data) => {
 
       console.log(data)
-
-      if(!hasMatchingPasswords(data.password,data.confirmPass)){
-          return toast(
-                  {
-                      title: 'Passwords don\'t match',
-                      description: 'Check passwords and try again',
-                      status: 'error',
-                      duration: 3000,
-                      isClosable: true,
-                    }
-              );
-
-      }
 
       let addressData = {
           street: data.street,
@@ -66,8 +53,11 @@ function Profile({member}) {
       };
 
       let formattedData = {
+        _id: member._id,
           firstNames: data.firstNames,
           lastName: data.lastName,
+          gender: data.gender,
+          isAdmin: data.isAdmin,
           email: data.email,
           password: data.password,
           contact: data.contact,
@@ -81,9 +71,9 @@ function Profile({member}) {
 
       // submit to backend
 
-      let host = process.env.NODE_ENV == 'production' ? 'https://iphcdb.vercel.app' :'http://localhost:3000'
+    //   let host = process.env.NODE_ENV == 'production' ? 'https://iphcdb.vercel.app' :'http://localhost:3000'
      
-      let res = await fetch(`${host}/api/addmember`,{
+      let res = await fetch(`/api/update-member`,{
           method: 'POST',
           body: JSON.stringify(formattedData),
       });
@@ -91,23 +81,19 @@ function Profile({member}) {
       if(res.status === 200){
           toast({
               title: 'Account created.',
-              description: "You have been successfully added to the IPHC database.",
+              description: "Successfully Updated.",
               status: 'success',
               duration: 5000,
               isClosable: true,
             });
-            dispatch(signin(await res.json().member));
-          setTimeout(() => {
-              router.push('/');
-          },2000)
       } else {
 
           let data = await res.json();
-          console.log(data);
+        //   console.log(data);
 
           toast({
-              title: 'Failed to create account',
-              description: `${data.error.keyValue.email} is already registered`,
+              title: 'Failed to update',
+              description: `server failed. Please try again later`,
               status: 'error',
               duration: 5000,
               isClosable: true,
@@ -294,7 +280,7 @@ return (
               {/* ----------------------- */}
               <FormControl mb="3">
                   <FormLabel>What is your job title <Text as="span" color="red">*</Text></FormLabel>
-                  <Input type="text" defaultValue={occupation?.position} {...register("jobTitle")}/>
+                  <Input type="text" defaultValue={occupation?.jobTitle} {...register("jobTitle")}/>
               </FormControl>
                       </Box>
                   )
@@ -322,7 +308,7 @@ return (
                   <Input type="email" defaultValue={email} {...register("email", {required: 'Field is required'})}/>
                   <Text color="red"><ErrorMessage errors={errors} name={'email'}/></Text>
               </FormControl>
-              <Button leftIcon={<Icon as={FaLock}/>} type="submit" colorScheme='red' px={8} 
+              <Button leftIcon={<Icon as={FaLock}/>} type="button" colorScheme='red' px={8} 
                 >Update password
           </Button>
           </Box>
