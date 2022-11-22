@@ -42,6 +42,7 @@ export default function Dashboard({ members }) {
 }
 
 export async function getStaticProps(context) {
+
   try {
     await connectMongo();
 

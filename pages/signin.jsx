@@ -6,6 +6,9 @@ import React from 'react'
 import { useForm } from 'react-hook-form'
 import { useDispatch } from 'react-redux';
 import { signin } from '../src/redux/reducers/authUser/authUserSlice';
+import {useCookies} from 'react-cookie';
+
+
 
 function Signin() {
   
@@ -13,6 +16,10 @@ function Signin() {
   const toast = useToast();
   const dispatch = useDispatch();
   const router = useRouter();
+
+
+  const [cookie, setCookie] = useCookies(['user']);
+
 
   const onSubmit = async (data) => {
     const user = {
@@ -45,10 +52,17 @@ function Signin() {
 
     console.log(resData);
 
+  
     dispatch(signin(resData.member));
 
     // Save to local storage
     localStorage.setItem('IPHCDB_AUTH',JSON.stringify(resData.member._id));
+
+    setCookie('user', JSON.stringify(resData), {
+      path: '/',
+      maxAge: 3600,
+      sameSite: true,
+    })
 
     router.push('/');
 
