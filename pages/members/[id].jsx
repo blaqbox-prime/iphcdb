@@ -1,21 +1,20 @@
-import {Box, Button, Divider, Flex, Grid, Heading, Icon, Input, Stack, Text, useRadio, useRadioGroup} from '@chakra-ui/react';
+import {Box, useDisclosure, Button, Divider, Flex, Grid, Heading, Icon, Input, Stack, Text, useRadio, useRadioGroup} from '@chakra-ui/react';
 import React, { useState, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { useToast } from '@chakra-ui/react'
-import { useRouter } from 'next/router'
 import { ErrorMessage } from '@hookform/error-message';
 import { useDispatch } from 'react-redux';
 import {MemberModel} from '../../db/models/MemberModel'
 import connectMongo from '../../db/db';
-import Link from 'next/link';
-import { FaLock, FaMapMarkerAlt } from 'react-icons/fa';
-import { MdAlternateEmail, MdOutlinePhone } from 'react-icons/md';
+import { FaLock} from 'react-icons/fa';
+
 import {
   FormControl,
   FormLabel,
   Select,
   Radio, RadioGroup 
 } from '@chakra-ui/react'
+import ChangePasswordModal from '../../src/components/ChangePasswordModal';
 
 function Profile({member}) {
 
@@ -31,8 +30,8 @@ function Profile({member}) {
     const [empStatus,setEmpStatus] = useState();
     // For Loading animation
     const toast = useToast();
+    const {isOpen, onOpen, onClose} = useDisclosure();
 
-    const router = useRouter();
 
     
     const onSubmit = async (data) => {
@@ -101,9 +100,6 @@ function Profile({member}) {
       }
   };
 
-  const hasMatchingPasswords = (pass1, pass2) => {
-      return pass1 === pass2;
-  }
 
   const onInvalid = (err) => {
       if(!isValid){
@@ -117,25 +113,6 @@ function Profile({member}) {
                 }
           );
       }
-  }
-
-  const changePasswordPrompt = () => {
-    {/* ----------------------- */}
-    <FormControl mb="3" isInvalid={'password' in errors}>
-    <FormLabel>Password <Text as="span" color="red">*</Text></FormLabel>
-    <Input type="password" {...register("password", {required: 'Field is required'})} />
-    <Text color={'red'}>
-    <ErrorMessage errors={errors} name={'password'}/>
-    </Text>
-                    </FormControl>
-{/* ----------------------- */}
-<FormControl mb="3" isInvalid={'confirmPass' in errors}>
-    <FormLabel>Confirm Password <Text as="span" color="red">*</Text></FormLabel>
-    <Input type="password" {...register("confirmPass", {required: 'Passwords do not match'})}/>
-    <Text color={'red'}>
-    <ErrorMessage errors={errors} name={'confirmPass'}/>
-    </Text>
-</FormControl>
   }
 
   const initdobFormat = () => {
@@ -308,7 +285,7 @@ return (
                   <Input type="email" defaultValue={email} {...register("email", {required: 'Field is required'})}/>
                   <Text color="red"><ErrorMessage errors={errors} name={'email'}/></Text>
               </FormControl>
-              <Button leftIcon={<Icon as={FaLock}/>} type="button" colorScheme='red' px={8} 
+              <Button leftIcon={<Icon as={FaLock}/>} type="button" colorScheme='red' px={8} onClick={()=> {onOpen()}}
                 >Update password
           </Button>
           </Box>
@@ -318,6 +295,10 @@ return (
           loadingText="Submitting"
           >Update profile</Button>
       </Box>
+
+              {/* Modal */}
+              <ChangePasswordModal isOpen={isOpen} onOpen={onOpen} onClose={onClose} member={member}/>
+
   </Flex>
 )
 }
