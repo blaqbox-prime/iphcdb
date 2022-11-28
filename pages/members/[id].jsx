@@ -15,6 +15,9 @@ import {
   Radio, RadioGroup 
 } from '@chakra-ui/react'
 import ChangePasswordModal from '../../src/components/ChangePasswordModal';
+import { AddIcon } from '@chakra-ui/icons';
+import AddDependant from '../../src/components/AddDependant';
+import Dependants from '../../src/components/Dependants';
 
 function Profile({member}) {
 
@@ -31,6 +34,10 @@ function Profile({member}) {
     // For Loading animation
     const toast = useToast();
     const {isOpen, onOpen, onClose} = useDisclosure();
+    const spouseModal = useDisclosure();
+    const childModal = useDisclosure();
+
+
 
 
     
@@ -190,6 +197,31 @@ return (
               </FormControl>
           </Box>
           <Divider maxW={'container.md'} my={5} color="blackAlpha.800"/>
+
+{/* Family ----------------------------------------------------------------- */}
+
+            <Box id="familyForm" mb="16">
+            <Heading mb={5}>Family</Heading>
+            
+            <Box id="spouseList">
+            <Button leftIcon={<AddIcon/>}  onClick={() => spouseModal.onOpen()}color="blue.400"> Add Spouse </Button>
+            </Box>
+
+            <Dependants memberId={member._id} type="spouse"/>
+
+            <Divider maxW={'container.md'} my={5} color="blackAlpha.800"/>
+
+            <Box id='childrenList'>
+            <Button leftIcon={<AddIcon/>} onClick={() => childModal.onOpen()} color="blue.400"> Add Child </Button>
+            </Box>
+
+            {/* <Dependants memberId={member._id} type="children"/> */}
+
+            </Box>
+
+            <Divider maxW={'container.md'} my={5} color="blackAlpha.800"/>
+
+
           {/* Home Address -------------------------------------*/}
           <Box id="homeAddressForm" mb="16">
               <Heading mb={5}>Where do you live?</Heading>
@@ -296,8 +328,10 @@ return (
           >Update profile</Button>
       </Box>
 
-              {/* Modal */}
+              {/* Modals */}
               <ChangePasswordModal isOpen={isOpen} onOpen={onOpen} onClose={onClose} member={member}/>
+              <AddDependant isOpen={spouseModal.isOpen} onOpen={spouseModal.onOpen} onClose={spouseModal.onClose} currentMember={member} type="spouse"/>
+              <AddDependant isOpen={childModal.isOpen} onOpen={childModal.onOpen} onClose={childModal.onClose} currentMember={member} type="child"/>
 
   </Flex>
 )
