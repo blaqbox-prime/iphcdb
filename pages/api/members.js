@@ -5,7 +5,6 @@ export default async function handler(req,res){
 
     try{
         await connecMongo();
-
       
             //create document
             const members = await MemberModel.find();

@@ -76,7 +76,7 @@ function ChangePasswordModal({isOpen, onOpen, onClose, member}) {
     <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay/>
         <ModalContent>
-            <ModalHeader>{authUser._id == member._id ? "Update Password" : 'Update Member\'s Password'}</ModalHeader>
+            <ModalHeader>{ "Update Password"}</ModalHeader>
             <ModalCloseButton/>
             <ModalBody>
                
