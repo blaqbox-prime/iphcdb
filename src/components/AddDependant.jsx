@@ -20,7 +20,11 @@ import {
   useToast,
   ModalFooter,
   Button,
+  Text,
+  Flex,
+  Box,
 } from "@chakra-ui/react";
+import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { baseURL } from "../helpers";
 
@@ -149,6 +153,14 @@ function AddDependant({ isOpen, onClose, onOpen, currentMember, type }) {
           )}
         </ModalBody>
         <ModalFooter>
+
+          <Flex width="100%" justifyContent="space-between" alignItems={'center'}>
+          
+          <Link href='/signup'>
+            <Text cursor="pointer" >Not found? <Text as="span" color={'red'} _hover={{textDecoration:'underline'}}>Add member to database</Text></Text>
+          </Link>
+
+          <Box>
           <Button
             color="red"
             onClick={() => {
@@ -163,6 +175,8 @@ function AddDependant({ isOpen, onClose, onOpen, currentMember, type }) {
           >
             Add {type}
           </Button>
+          </Box>
+          </Flex>
         </ModalFooter>
       </ModalContent>
     </Modal>

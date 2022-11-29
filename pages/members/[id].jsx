@@ -1,12 +1,11 @@
-import {Box, useDisclosure, Button, Divider, Flex, Grid, Heading, Icon, Input, Stack, Text, useRadio, useRadioGroup} from '@chakra-ui/react';
-import React, { useState, useRef } from 'react'
+import {Box, useDisclosure, Button, Divider, Flex, Grid, Heading, Icon, Input, Stack, Text, useRadio, useRadioGroup, Center, CircularProgress} from '@chakra-ui/react';
+import React, { useState, useRef, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useToast } from '@chakra-ui/react'
 import { ErrorMessage } from '@hookform/error-message';
 import { useDispatch } from 'react-redux';
-import {MemberModel} from '../../db/models/MemberModel'
-import connectMongo from '../../db/db';
 import { FaLock} from 'react-icons/fa';
+import {baseURL} from '../../src/helpers'
 
 import {
   FormControl,
@@ -21,14 +20,14 @@ import Dependants from '../../src/components/Dependants';
 
 function Profile({member}) {
 
-  const {city,suburb, street, province, postal_code} = member.address;
+  const {city,suburb, street, province, postal_code} = member?.address;
   const {firstNames, lastName,contact, email,
          children, dateOfBirth, employmentStatus,
          gender, isMarried,isSeekingWork, occupation,
          spouse} = member;
 
   const dispatch = useDispatch();
-    const {register, handleSubmit, formState: {errors, isSubmitting, isValid}} = useForm({defaultValues:{isMarried: isMarried, gender: gender}});
+    const {register, handleSubmit, formState: {errors, isSubmitting, isValid}} = useForm();
     // const [data,setData] = useState();
     const [empStatus,setEmpStatus] = useState();
     // For Loading animation
@@ -76,8 +75,6 @@ function Profile({member}) {
       }
 
       // submit to backend
-
-    //   let host = process.env.NODE_ENV == 'production' ? 'https://iphcdb.vercel.app' :'http://localhost:3000'
      
       let res = await fetch(`/api/update-member`,{
           method: 'POST',
@@ -215,7 +212,7 @@ return (
             <Button leftIcon={<AddIcon/>} onClick={() => childModal.onOpen()} color="blue.400"> Add Child </Button>
             </Box>
 
-            {/* <Dependants memberId={member._id} type="children"/> */}
+            <Dependants memberId={member._id} type="children"/>
 
             </Box>
 
@@ -339,48 +336,47 @@ return (
 
 export default Profile;
 
-export async function getStaticPaths(){
+// export async function getStaticPaths(){
 
-  await connectMongo();
-  const members = await MemberModel.find();
+//   await connectMongo();
+//   const members = await MemberModel.find();
 
-  const paths = JSON.parse(JSON.stringify(members)).map((member) => ({params: {id: member._id}}));
+//   const paths = JSON.parse(JSON.stringify(members)).map((member) => ({params: {id: member._id}}));
 
-  return {
-    paths: paths,
-    fallback: false
-  }
+//   return {
+//     paths: paths,
+//     fallback: false
+//   }
 
 
   
-}
+// }
 
-export async function getStaticProps(context) {
+export async function getServerSideProps(context) {
 
   const {params} = context;
   const id = params.id;
 
-  try{
-    await connectMongo();
+  const res = await fetch(`${baseURL}/api/member/${id}`);
+  console.log(res)
+  const data = await res.json();
 
-  
-        //fetch user
-        const members = await MemberModel.findOne({_id: id});
-        
-        const jsonData = JSON.stringify(members);
+  console.log(data);
 
-        return {
-          props: {member: JSON.parse(jsonData)}
-        }
-  
+  if(res.status === 200) {
 
-
-}catch(error){
-    console.log(error)
     return {
-      props: {
-        member: {}
-      }
+        props: {
+            member: data
+        }
+    }
+
+  } else {
+    return {
+        redirect: {
+            destination: '/',
+            permanent: false,
+        }
     }
   }
 }

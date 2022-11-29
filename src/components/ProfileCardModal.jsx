@@ -19,6 +19,7 @@ import {
   Link,
   ListItem
 } from '@chakra-ui/react'
+import Dependants from './Dependants'
 
 import {MdAlternateEmail, MdOutlinePhone} from 'react-icons/md'
 import {FaMapMarkerAlt} from 'react-icons/fa'
@@ -62,23 +63,14 @@ function ProfileCardModal({isOpen, onOpen, onClose, member}) {
         {/* Spouses */}
         <Box mb={4}>
         <Text>Spouse(s):</Text>
-        {
-          !member.isMarried ? <Text>None</Text>
-          : <List>
-            {member.spouses.map(spouse => <ListItem key={spouse._id}>{`${spouse.firstNames} ${spouse.lastName}`}</ListItem>)}
-          </List>
-        }
+        <Dependants memberId={member._id} type="spouse"/>
+
         </Box> 
 
         {/* Children */}
         <Box mb={4}>
         <Text>Children:</Text>
-        {
-          member.children.length == 0 ? <Text>None</Text>
-          : <List>
-            {member.children.map(child => <ListItem key={child._id}>{`${child.firstNames} ${child.lastName}`}</ListItem>)}
-          </List>
-        }
+      <Dependants memberId={member._id} type="children"/>
         </Box> 
         </Box>
         </Flex>

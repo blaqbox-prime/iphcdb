@@ -36,12 +36,8 @@ function Dependants({memberId, type}) {
           fetchData();    
       return () => {
       }
-    }, [])
+    }, [memberId])
     
-
-    // 
-    console.log('on render', dependants);
-
   return (
     <Box>
         { dependants && dependants.map(dependant => (
