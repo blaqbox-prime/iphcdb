@@ -24,9 +24,10 @@ function Profile({member}) {
 
   const {city,suburb, street, province, postal_code} = member?.address;
   const {firstNames, lastName,contact, email,
-         children, dateOfBirth, employmentStatus,
+         children, dateOfBirth,
          gender, isMarried,isSeekingWork, occupation,
          spouse} = member;
+const  [employmentStatus, setEmplStatus] = useState(member.employmentStatus);
 const router = useRouter();
     const {register, handleSubmit, formState: {errors, isSubmitting, isValid}} = useForm();
     const { data: session } = useSession();
@@ -274,7 +275,7 @@ return (
               {/* ----------------------- */}
               <FormControl mb="3" isInvalid={'empStatus' in errors}>
                   <FormLabel>Employment status <Text as="span" color="red">*</Text></FormLabel>
-                  <Select disabled={!isEditable()} defaultChecked={employmentStatus} {...register("empStatus", {required: 'Select one option from the dropdown list'})} onChange={(e)=>{setEmpStatus(e.target.value)}}>
+                  <Select disabled={!isEditable()} defaultChecked={employmentStatus} {...register("empStatus", {required: 'Select one option from the dropdown list'})} onChange={(e)=>{ setEmplStatus(e.target.value)}}>
                       <option value='Employed'>Employed</option>
                       <option value='Self-Employed'>Self-Employed</option>
                       <option value='Unemployed'>Unemployed</option>
