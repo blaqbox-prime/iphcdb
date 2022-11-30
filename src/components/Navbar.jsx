@@ -30,7 +30,7 @@ function Navbar() {
     const { data: session } = useSession()
 
     const signoutUser = () => {
-        signOut();
+        signOut({redirect: false});
         router.replace('/signin');
     }
 
