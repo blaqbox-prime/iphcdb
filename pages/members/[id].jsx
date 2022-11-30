@@ -3,9 +3,10 @@ import React, { useState, useRef, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useToast } from '@chakra-ui/react'
 import { ErrorMessage } from '@hookform/error-message';
-import { useDispatch } from 'react-redux';
-import { FaLock} from 'react-icons/fa';
+import { useSession } from "next-auth/react"
+import { FaLock, FaArrowLeft} from 'react-icons/fa';
 import {baseURL} from '../../src/helpers'
+import {useRouter} from 'next/router'
 
 import {
   FormControl,
@@ -17,6 +18,7 @@ import ChangePasswordModal from '../../src/components/ChangePasswordModal';
 import { AddIcon } from '@chakra-ui/icons';
 import AddDependant from '../../src/components/AddDependant';
 import Dependants from '../../src/components/Dependants';
+import Protected from '../../src/components/Protected';
 
 function Profile({member}) {
 
@@ -25,17 +27,19 @@ function Profile({member}) {
          children, dateOfBirth, employmentStatus,
          gender, isMarried,isSeekingWork, occupation,
          spouse} = member;
-
-  const dispatch = useDispatch();
+const router = useRouter();
     const {register, handleSubmit, formState: {errors, isSubmitting, isValid}} = useForm();
-    // const [data,setData] = useState();
-    const [empStatus,setEmpStatus] = useState();
+    const { data: session } = useSession();
     // For Loading animation
     const toast = useToast();
     const {isOpen, onOpen, onClose} = useDisclosure();
     const spouseModal = useDisclosure();
     const childModal = useDisclosure();
 
+    const isEditable = () => {
+        if(member._id == session?.user._id || session?.user.isAdmin) {return true;}
+        else {return false;}  
+    } 
 
 
 
@@ -130,6 +134,8 @@ function Profile({member}) {
   } 
 
 return (
+    <Protected>
+    
   <Flex mt={5} 
   flexDirection={'column'}
   w="100"
@@ -144,17 +150,18 @@ return (
       {/* FORM --------- */}
       <Box as="form" onSubmit={handleSubmit(onSubmit, onInvalid)} w={['100%','100%',"60%"]} p={['2',"6"]} overflowY={["unset","unset",'auto']}>
           <Box id="personalInfoForm" minH={['unset','unset','100%']} mb="5">
+              <Button leftIcon={<Icon as={FaArrowLeft} />} onClick={() => {router.push('/')}}>Back</Button>
               <Heading mb={5}>Personal Information</Heading>
               {/* ----------------------- */}
               <FormControl mb="3" isInvalid={'firstNames' in errors}>
                   <FormLabel>First Names <Text as="span" color="red">*</Text></FormLabel> 
-                  <Input type="text" defaultValue={firstNames} {...register("firstNames",  {required: 'Field is required'})} mb={1}/>
+                  <Input type="text" disabled={!isEditable()} defaultValue={firstNames} {...register("firstNames",  {required: 'Field is required'})} mb={1}/>
                   <Text color="red"><ErrorMessage errors={errors} name={'firstNames'}/></Text>
               </FormControl>
               {/* ----------------------- */}
               <FormControl mb="3" isInvalid={'lastName' in errors}>
                   <FormLabel>Last Name <Text as="span" color="red">*</Text></FormLabel>
-                  <Input type="text" defaultValue={lastName} {...register("lastName", {required: 'Field is required'})}/>
+                  <Input type="text" disabled={!isEditable()} defaultValue={lastName} {...register("lastName", {required: 'Field is required'})}/>
                   <Text color="red"><ErrorMessage errors={errors} name={'lastName'}/></Text>
 
 
@@ -162,20 +169,20 @@ return (
               {/* ----------------------- */}
               <FormControl mb="3" isInvalid={'dob' in errors}>
                   <FormLabel>Date of Birth <Text as="span" color="red">*</Text></FormLabel>
-                  <Input type="date"  defaultValue={initdobFormat()} {...register("dob", {required:'Field is required'})}/>
+                  <Input type="date" disabled={!isEditable()}  defaultValue={initdobFormat()} {...register("dob", {required:'Field is required'})}/>
                  <Text color="red"> <ErrorMessage errors={errors} name={'dob'}/></Text>
 
               </FormControl>
               {/* ----------------------- */}
               <FormControl mb="3" isInvalid={'contact' in errors}>
                   <FormLabel>Contact Number <Text as="span" color="red">*</Text></FormLabel>
-                  <Input type="text" defaultValue={contact} {...register("contact",{required: 'Field is required'})}/>
+                  <Input type="text" disabled={!isEditable()} defaultValue={contact} {...register("contact",{required: 'Field is required'})}/>
                   <Text color="red"><ErrorMessage errors={errors} name={'contact'}/></Text>
               </FormControl>
               {/* ----------------------- */}
               <FormControl mb="3" isInvalid={'gender' in errors}>
                   <FormLabel>Gender <Text as="span" color="red">*</Text></FormLabel>
-                  <RadioGroup defaultValue={gender}>
+                  <RadioGroup disabled={!isEditable()} defaultValue={gender}>
                       <Stack direction='row' gap={5}>
                           <Radio value='Male' {...register("gender")}>Male</Radio>
                           <Radio value='Female' {...register("gender")}>Female</Radio>
@@ -185,7 +192,7 @@ return (
                {/* ----------------------- */}
                <FormControl mb="3" isInvalid={'isMarried' in errors}>
                   <FormLabel>Are You Married? <Text as="span" color="red">*</Text></FormLabel>
-                  <RadioGroup defaultValue={isMarried ? 'Yes' : 'No'}>
+                  <RadioGroup disabled={!isEditable()} defaultValue={isMarried ? 'Yes' : 'No'}>
                       <Stack direction='row' gap={5}>
                           <Radio value='Yes' {...register("isMarried")}>Yes</Radio>
                           <Radio value='No' {...register("isMarried")}>No</Radio>
@@ -201,7 +208,7 @@ return (
             <Heading mb={5}>Family</Heading>
             
             <Box id="spouseList">
-            <Button leftIcon={<AddIcon/>}  onClick={() => spouseModal.onOpen()}color="blue.400"> Add Spouse </Button>
+            {isEditable() && <Button leftIcon={<AddIcon/>}  onClick={() => spouseModal.onOpen()}color="blue.400"> Add Spouse </Button>}
             </Box>
 
             <Dependants memberId={member._id} type="spouse"/>
@@ -209,7 +216,7 @@ return (
             <Divider maxW={'container.md'} my={5} color="blackAlpha.800"/>
 
             <Box id='childrenList'>
-            <Button leftIcon={<AddIcon/>} onClick={() => childModal.onOpen()} color="blue.400"> Add Child </Button>
+            {isEditable() && <Button leftIcon={<AddIcon/>} onClick={() => childModal.onOpen()} color="blue.400"> Add Child </Button>}
             </Box>
 
             <Dependants memberId={member._id} type="children"/>
@@ -222,39 +229,39 @@ return (
           {/* Home Address -------------------------------------*/}
           <Box id="homeAddressForm" mb="16">
               <Heading mb={5}>Where do you live?</Heading>
-              <Grid gridTemplateColumns={"repeat(2,1fr)"} gap="3" mb="5">
+              <Grid gridTemplateColumns={["auto","auto","repeat(2,1fr)"]} gap="3" mb="5">
                   {/* ----------------------- */}
               <FormControl isInvalid={'street' in errors}>
                   <FormLabel>Street <Text as="span" color="red">*</Text></FormLabel>
-                  <Input type="text" defaultValue={street} {...register("street", {required: 'Field is required'})}/>
+                  <Input type="text" disabled={!isEditable()} defaultValue={street} {...register("street", {required: 'Field is required'})}/>
                   <Text color="red"><ErrorMessage errors={errors} name={'street'}/></Text>
 
               </FormControl>
               {/* ----------------------- */}
               <FormControl isInvalid={'suburb' in errors}>
                   <FormLabel>Suburb <Text as="span" color="red">*</Text></FormLabel>
-                  <Input type="text" defaultValue={suburb} {...register("suburb", {required: 'Field is required'})}/>
+                  <Input type="text" disabled={!isEditable()} defaultValue={suburb} {...register("suburb", {required: 'Field is required'})}/>
                   <Text color="red"><ErrorMessage errors={errors} name={'suburb'}/></Text>
 
               </FormControl>
               {/* ----------------------- */}
               <FormControl isInvalid={'city' in errors}>
                   <FormLabel>City <Text as="span" color="red">*</Text></FormLabel>
-                  <Input type="text" defaultValue={city} {...register("city", {required: 'Field is required'})}/>
+                  <Input disabled={!isEditable()} type="text" defaultValue={city} {...register("city", {required: 'Field is required'})}/>
                   <Text color="red"><ErrorMessage errors={errors} name={'city'}/></Text>
               </FormControl>
               
               {/* ----------------------- */}
               <FormControl isInvalid={'province' in errors}>
                   <FormLabel>Province <Text as="span" color="red">*</Text></FormLabel>
-                  <Input type="text" defaultValue={province} {...register("province", {required: 'Field is required'})}/>
+                  <Input disabled={!isEditable()} type="text" defaultValue={province} {...register("province", {required: 'Field is required'})}/>
                   <Text color="red"><ErrorMessage errors={errors} name={'province'}/></Text>
 
               </FormControl>
               {/* ----------------------- */}
               <FormControl isInvalid={'postal' in errors}>
                   <FormLabel>Postal Code <Text as="span" color="red">*</Text></FormLabel>
-                  <Input type="text" defaultValue={postal_code} {...register("postal",  {required: 'Field is required'})}/>
+                  <Input disabled={!isEditable()} type="text" defaultValue={postal_code} {...register("postal",  {required: 'Field is required'})}/>
                   <Text color="red"><ErrorMessage errors={errors} name={'postal'}/></Text>
               </FormControl>
               </Grid>
@@ -267,7 +274,7 @@ return (
               {/* ----------------------- */}
               <FormControl mb="3" isInvalid={'empStatus' in errors}>
                   <FormLabel>Employment status <Text as="span" color="red">*</Text></FormLabel>
-                  <Select defaultChecked={employmentStatus} {...register("empStatus", {required: 'Select one option from the dropdown list'})} onChange={(e)=>{setEmpStatus(e.target.value)}}>
+                  <Select disabled={!isEditable()} defaultChecked={employmentStatus} {...register("empStatus", {required: 'Select one option from the dropdown list'})} onChange={(e)=>{setEmpStatus(e.target.value)}}>
                       <option value='Employed'>Employed</option>
                       <option value='Self-Employed'>Self-Employed</option>
                       <option value='Unemployed'>Unemployed</option>
@@ -276,17 +283,17 @@ return (
 
               </FormControl>
               {
-                  (empStatus == 'Employed' || (empStatus == 'Self-Employed')) && (
+                  (employmentStatus == 'Employed' || (employmentStatus == 'Self-Employed')) && (
                       <Box>
                           {/* ----------------------- */}
               <FormControl mb="3" >
                   <FormLabel>Which company do you work for? <Text as="span" color="red">*</Text></FormLabel>
-                  <Input type="text" defaultValue={occupation?.company} {...register("company")}/>
+                  <Input type="text" disabled={!isEditable()} defaultValue={occupation?.company} {...register("company")}/>
               </FormControl>
               {/* ----------------------- */}
               <FormControl mb="3">
                   <FormLabel>What is your job title <Text as="span" color="red">*</Text></FormLabel>
-                  <Input type="text" defaultValue={occupation?.jobTitle} {...register("jobTitle")}/>
+                  <Input disabled={!isEditable()} type="text" defaultValue={occupation?.jobTitle} {...register("jobTitle")}/>
               </FormControl>
                       </Box>
                   )
@@ -294,7 +301,7 @@ return (
               {/* ----------------------- */}
               <FormControl mb="3" isInvalid={'isSeekingWork' in errors}>
                   <FormLabel>Are you actively seeking work? <Text as="span" color="red">*</Text></FormLabel>
-                  <Select defaultChecked={isSeekingWork} {...register("isSeekingWork", {required: 'Select one option from the dropdown list'})}>
+                  <Select disabled={!isEditable()} defaultChecked={isSeekingWork} {...register("isSeekingWork", {required: 'Select one option from the dropdown list'})}>
                       <option value='Yes'>Yes</option>
                       <option value='No'>No</option>
                   </Select>
@@ -305,24 +312,28 @@ return (
           <Divider maxW={'container.md'} my={5} color="blackAlpha.800"/>
               {/* Login Credentials----------------------- */}
 
-          <Box id="loginCredentialsForm" mb="16">
-              <Heading>Account Information</Heading>
-              <Text fontSize="sm" mb="5">These will be used to access the database</Text>
-              {/* ----------------------- */}
-              <FormControl mb="3" isInvalid={'email' in errors}>
-                  <FormLabel>Email address <Text as="span" color="red">*</Text></FormLabel>
-                  <Input type="email" defaultValue={email} {...register("email", {required: 'Field is required'})}/>
-                  <Text color="red"><ErrorMessage errors={errors} name={'email'}/></Text>
-              </FormControl>
-              <Button leftIcon={<Icon as={FaLock}/>} type="button" colorScheme='red' px={8} onClick={()=> {onOpen()}}
-                >Update password
-          </Button>
-          </Box>
+         {
+            isEditable() &&  <Box id="loginCredentialsForm" mb="16">
+            <Heading>Account Information</Heading>
+            <Text fontSize="sm" mb="5">These will be used to access the database</Text>
+            {/* ----------------------- */}
+            <FormControl mb="3" isInvalid={'email' in errors}>
+                <FormLabel>Email address <Text as="span" color="red">*</Text></FormLabel>
+                <Input type="email" defaultValue={email} {...register("email", {required: 'Field is required'})}/>
+                <Text color="red"><ErrorMessage errors={errors} name={'email'}/></Text>
+            </FormControl>
+            <Button leftIcon={<Icon as={FaLock}/>} type="button" colorScheme='red' px={8} onClick={()=> {onOpen()}}
+              >Update password
+        </Button>
+        </Box>
+         }
 
-          <Button type="submit" colorScheme='blue' px={8} 
-          isLoading={isSubmitting}
-          loadingText="Submitting"
-          >Update profile</Button>
+         {
+            isEditable() &&  <Button type="submit" colorScheme='blue' px={8} 
+            isLoading={isSubmitting}
+            loadingText="Submitting"
+            >Update profile</Button>
+         }
       </Box>
 
               {/* Modals */}
@@ -331,7 +342,7 @@ return (
               <AddDependant isOpen={childModal.isOpen} onOpen={childModal.onOpen} onClose={childModal.onClose} currentMember={member} type="child"/>
 
   </Flex>
-)
+  </Protected>)
 }
 
 export default Profile;

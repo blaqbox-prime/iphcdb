@@ -6,6 +6,8 @@ import {FaUserCircle} from 'react-icons/fa';
 import {BiExit} from 'react-icons/bi'
 import {useSelector} from 'react-redux'
 import { useDispatch } from 'react-redux';
+import { useSession, signIn, signOut } from "next-auth/react"
+
 import {
     Menu,
     MenuButton,
@@ -25,11 +27,14 @@ function Navbar() {
     const authUser = useSelector((state) => state.authUser);
     const dispatch = useDispatch();
     const router = useRouter();
+    const { data: session } = useSession()
 
     const signoutUser = () => {
-        dispatch(signout);
-        router.reload();
+        signOut();
+        router.replace('/signin');
     }
+
+    console.log(session);
 
   return (
    
@@ -48,13 +53,13 @@ function Navbar() {
                     <MenuButton>
                         <Flex alignItems={'center'}>
                         <Icon boxSize={6} as={FaUserCircle}/>
-                {authUser && <Text ml="3">{authUser.firstNames}</Text>}
+                {session && <Text ml="3">{session.user.firstNames}</Text>}
                         </Flex>
                     </MenuButton>
                     {
-                        authUser && (
+                        session && (
                             <MenuList>
-                                <Link href={`/members/${authUser._id}`}><MenuItem icon={<Icon as={FaUserCircle}/>}>Profile</MenuItem></Link>
+                                <Link href={`/members/${session.user._id}`}><MenuItem icon={<Icon as={FaUserCircle}/>}>Profile</MenuItem></Link>
                                 <MenuItem icon={<Icon as={BiExit}/>} onClick={signoutUser}>Sign Out</MenuItem>
                             </MenuList>
                         )

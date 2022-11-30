@@ -1,4 +1,4 @@
-import { Box, Heading } from "@chakra-ui/react";
+import { Box, Center, Heading, Text } from "@chakra-ui/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { useEffect, useLayoutEffect } from "react";
@@ -8,28 +8,18 @@ import MembersTable from "../src/components/MembersTable";
 import Stats from "../src/components/Stats";
 import { MemberModel } from "../db/models/MemberModel";
 
+import { useSession, signIn, signOut } from "next-auth/react"
+import Protected from "../src/components/Protected";
+
 export default function Dashboard({ members }) {
   const authUser = useSelector((state) => state.authUser);
   const router = useRouter();
+  const { data: session } = useSession()
 
-  useEffect(() => {
-    console.log(authUser);
 
-    if (!authUser) {
-      router.push("/signin");
-    }
-  }, [authUser]);
-
-  // console.log(members)
-  return !authUser ? <></> : (
-
+  return (
+  <Protected>
     <div>
-      <Head>
-        <title>IPHC Members Database</title>
-        <meta name="description" content="IPHC Members Database" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
       <Heading>Database Dashboard</Heading>
       <Box as="main">
         {/* Quick stats */}
@@ -38,7 +28,7 @@ export default function Dashboard({ members }) {
         <MembersTable members={members} />
       </Box>
     </div>
-  );
+    </Protected>);
 }
 
 export async function getStaticProps(context) {

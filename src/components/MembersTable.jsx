@@ -22,10 +22,12 @@ import { useSelector } from 'react-redux';
 import { MdEdit, MdDelete, MdRemoveRedEye } from 'react-icons/md';
 import DeleteMemberModal from './DeleteMemberModal';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 
 
 function MembersTable({members}) {
 
+  const { data: session } = useSession()
   const router = useRouter();
   const confirmDeleteModal = useDisclosure();
   const displayMemberProfileCard = useDisclosure();
@@ -33,8 +35,10 @@ function MembersTable({members}) {
 
   const [selectedMember, setSelectedMember] = useState(null);
   const [selectedForDeleteMember, setSelectedForDeleteMember] = useState(null);
-  const authUser = useSelector((state) => state.authUser);
     
+  const authUser = session.user;
+
+
   const showProfile = (member) => {
     setSelectedMember(member);
     !isOpen && onOpen();

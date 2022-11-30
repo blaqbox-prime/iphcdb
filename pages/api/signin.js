@@ -1,10 +1,12 @@
-import connecMongo from '../../../db/db';
-import {MemberModel} from '../../../db/models/MemberModel';
+import connecMongo from '../../db/db';
+import {MemberModel} from '../../db/models/MemberModel';
 const bcrypt = require('bcrypt');
 
 export default async function handler(req,res){
 
         await connecMongo();
+
+        console.log(req.body)
 
         let signInData = JSON.parse(req.body);
 
