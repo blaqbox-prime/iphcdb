@@ -1,5 +1,4 @@
 import NextAuth from "next-auth";
-import GithubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
 import connecMongo from "../../../db/db";
 import { MemberModel } from "../../../db/models/MemberModel";
@@ -7,6 +6,7 @@ const bcrypt = require("bcrypt");
 import {baseURL} from '../../../src/helpers'
 
 export const authOptions = {
+  secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: 'jwt'
   },
@@ -56,7 +56,6 @@ export const authOptions = {
 
       const authUser = await fetch(`${baseURL}/api/member/getbyemail?email=${token.email}`);
 
-      // Send properties to the client, like an access_token and user id from a provider.
       session.accessToken = token.accessToken
       session.user.id = token.id
       session.user = { ...session.user,...await authUser.json()};
