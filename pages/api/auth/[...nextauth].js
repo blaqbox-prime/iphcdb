@@ -6,6 +6,7 @@ const bcrypt = require("bcrypt");
 import {baseURL} from '../../../src/helpers'
 
 export const authOptions = {
+  secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: 'jwt'
   },
